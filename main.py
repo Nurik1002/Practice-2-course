@@ -1,8 +1,40 @@
+AUTH_USER_MODEL = 'products.Users'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'Praktika',
+        'USER': 'root',
+        'PASSWORD': 'nurik0210',
+        'HOST':'localhost',
+        'PORT':'3306',
+    }
+}
+
+# Base url to serve media files
+MEDIA_URL = '/media/'
+
+# Path where media is stored
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+from django.contrib import admin
+from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+]
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
-# Create your models here.
-
 
 # ------------------ Foydalanuvchilar bazasi -------------------------------
 
@@ -228,6 +260,5 @@ class Otherproducts(models.Model):
     image = models.ImageField(upload_to='other/')
     quantity = models.PositiveSmallIntegerField(verbose_name = 'Soni')
     description = models.TextField(verbose_name = 'Qo\'shimcha ma\'lumot', null = True)
-
 
 
