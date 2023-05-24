@@ -21,6 +21,7 @@ from django.contrib.auth.models import AbstractUser
 
 class Users(AbstractUser):
     phone_num = models.CharField(verbose_name = 'Telefon raqam', max_length = 15, null = False)
+    address = models.CharField(verbose_name='Foydalanuvchi manzili', max_length=500, default=None)
     telegram_id = models.CharField(verbose_name = 'Telegram id', max_length = 15 , null = False)
     telegram_username = models.CharField(verbose_name = 'Telegram username', max_length = 55, null = True)
     is_admin = models.BooleanField(verbose_name = 'Admin yoki foydalanuvchi', default=False)
@@ -40,7 +41,6 @@ class Users(AbstractUser):
 #   `name` VARCHAR(255) NOT NULL,
 
 class Firma(models.Model):
-    id = models.PositiveBigIntegerField(primary_key=True, auto_created=True)
     name = models.CharField(verbose_name = 'Firma nomi', max_length = 255)
 
     def __str__(self):
@@ -48,7 +48,7 @@ class Firma(models.Model):
     
     class Meta:
         verbose_name = 'Firma'
-        verbose_name_plural = '2. Firma'
+        verbose_name_plural = '3. Firma'
     
 
 # --------------------- Kompyuterlar bazasi --------------------------------
@@ -116,7 +116,7 @@ class Computer(models.Model):
 
     class Meta:
         verbose_name = 'Kompyuterlar'
-        verbose_name_plural = '3. Komyuterlar'
+        verbose_name_plural = '4. Komyuterlar'
 
 # ----------------------- Smartphone bazasi
 
@@ -185,7 +185,7 @@ class Smartphone(models.Model):
 
     class Meta:
         verbose_name = 'SmartPhone'
-        verbose_name_plural = '4. SmartPhone'
+        verbose_name_plural = '5. SmartPhone'
 
 
 # -------------------------- Smart Watch bazasi --------------------------
@@ -227,7 +227,7 @@ class Smartwatch(models.Model):
 
     class Meta:
         verbose_name = 'SmartWatch'
-        verbose_name_plural = '5. SmartWatch'
+        verbose_name_plural = '6. SmartWatch'
 
 # -------------------- Aksesuarlar bazsi ------------------
 
@@ -261,7 +261,7 @@ class Accessory(models.Model):
 
     class Meta:
         verbose_name = 'Aksesuarlar'
-        verbose_name_plural = '6. Aksesuarlar'
+        verbose_name_plural = '7. Aksesuarlar'
 
 # -------------------- Boshqa mahsulotlar bazasi --------------------
 # CREATE TABLE IF NOT EXISTS `Telegramshop`.`other_products` (
@@ -294,6 +294,24 @@ class Otherproducts(models.Model):
 
     class Meta:
         verbose_name = 'Boshqa mahsulotlar'
-        verbose_name_plural = '7. Boshqa mahsulotlar'
+        verbose_name_plural = '8. Boshqa mahsulotlar'
+
+
+# ------------------------- Savatcha ---------------------------------
+class Basket(models.Model):
+    user = models.ForeignKey(Users, on_delete=models.CASCADE, verbose_name='Foydalanuvchi')
+    computer = models.ManyToManyField(Computer, null=True, default=None)
+    smartphone = models.ManyToManyField(Smartphone, null=True, default=None)
+    smartwatch = models.ManyToManyField(Smartwatch, null=True, default=None)
+    accessory = models.ManyToManyField(Accessory, null=True, default=None)
+    otherproducts = models.ManyToManyField(Otherproducts, null=True, default=None)
+
+    def __str__(self):
+        return f"{self.user.last_name} {self.user.first_name} {self.user.phone_num} {self.user.address}"
+    
+    class Meta:
+        verbose_name = 'Savatcha'
+        verbose_name_plural = '2. Savatcha'
+
 
 
