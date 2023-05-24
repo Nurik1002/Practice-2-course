@@ -20,6 +20,7 @@ class Database:
                       fetchrow: bool = False,
                       execute: bool = False
                       ):
+        
         async with self.pool.acquire() as connection:
             connection: Connection
             async with connection.transaction():
