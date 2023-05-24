@@ -33,3 +33,25 @@ class Database:
                 elif execute:
                     result = await connection.execute(command, *args)
             return result
+        
+    
+    def add_user(self, last_name, first_name, email, phone_num, telegram_id, telegram_username, manzil):
+        """
+        Bazaga foydalamuvhcilarni bazaga qo'shish
+        """
+        sql = f"DECLARE out INT; CALL create_user('{last_name}', '{first_name}', '{email}', '{phone_num}', '{telegram_id}', '{telegram_username}', '{manzil}', out); SELECT out;"
+        
+        await self.execute(sql, execute=True)
+
+        
+    
+    def add_admin(self, telegram_id):
+        """
+        Foydalanuvchini admin darajasiga ko'tarish
+        """
+        sql = f"CALL set_admin_user({telegram_id})"
+
+        await self.execute(sql, execute=True)
+
+    
+        
