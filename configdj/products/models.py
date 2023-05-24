@@ -25,8 +25,8 @@ class Users(AbstractUser):
     telegram_username = models.CharField(verbose_name = 'Telegram username', max_length = 55, null = True)
     is_admin = models.BooleanField(verbose_name = 'Admin yoki foydalanuvchi', default=False)
 
-    def __str__():
-        return f"{id} : {last_name} {first_name} "
+    def __str__(self):
+        return f"{self.id} : {self.last_name} {self.first_name} "
     
     class Meta:
         verbose_name = 'Foydalanuvchilar'
@@ -40,11 +40,11 @@ class Users(AbstractUser):
 #   `name` VARCHAR(255) NOT NULL,
 
 class Firma(models.Model):
-    id = models.PositiveBigIntegerField(primary_key=True)
+    id = models.PositiveBigIntegerField(primary_key=True, auto_created=True)
     name = models.CharField(verbose_name = 'Firma nomi', max_length = 255)
 
-    def __str__():
-        return f"{name}"
+    def __str__(self):
+        return f"{self.name}"
     
     class Meta:
         verbose_name = 'Firma'
@@ -88,11 +88,17 @@ class Computer(models.Model):
         ('DDR5', 'DDR5'),
         
     )
+    CURRENCY = (
+        ('UZS', 'UZS'),
+        ('RUB', 'RUB'),
+        ('USD', 'USD'),
+    )
 
-    id = models.PositiveBigIntegerField(primary_key = True)
+    
     name = models.CharField(verbose_name = 'Nomi', max_length = 255)
     firma = models.ForeignKey(Firma, on_delete=models.CASCADE, verbose_name = 'Firma')
     price = models.PositiveIntegerField(verbose_name = 'Narxi')
+    currency = models.CharField(verbose_name = 'Valyuta', max_length=3, choices = CURRENCY, default='UZS')
     prosessor = models.CharField(verbose_name = 'Prosessor', max_length = 255)
     ram = models.PositiveSmallIntegerField(verbose_name = 'Operativ xotira GB')
     ram_type = models.CharField(verbose_name = 'Operativ xotira turi', max_length = 20, choices=RAM_TURLARI)
@@ -104,7 +110,13 @@ class Computer(models.Model):
     quantity = models.PositiveSmallIntegerField(verbose_name = 'Kompyuter soni')
     description = models.TextField(verbose_name = 'Qo\'shimcha ma\'lumot', null = True)
 
+    def __str__(self):
+        return f"{self.id} {self.firma.name} {self.name} {self.price} {self.currency}"
 
+
+    class Meta:
+        verbose_name = 'Kompyuterlar'
+        verbose_name_plural = '3. Komyuterlar'
 
 # ----------------------- Smartphone bazasi
 
@@ -141,10 +153,17 @@ class Smartphone(models.Model):
         ('LPDDR5X', 'LPDDR5X'),        
     )
 
-    id = models.PositiveBigIntegerField(primary_key = True)
+    
+    CURRENCY = (
+        ('UZS', 'UZS'),
+        ('RUB', 'RUB'),
+        ('USD', 'USD'),
+    )
+
     name = models.CharField(verbose_name = 'Nomi', max_length = 255)
     firma = models.ForeignKey(Firma, on_delete=models.CASCADE, verbose_name = 'Firma')
     price = models.PositiveIntegerField(verbose_name = 'Narxi')
+    currency = models.CharField(verbose_name = 'Valyuta', max_length=3, choices = CURRENCY, default='UZS')
     prosessor = models.CharField(verbose_name = 'Prosessor', max_length = 255)
     ram = models.PositiveSmallIntegerField(verbose_name = 'Operativ xotira GB')
     ram_type = models.CharField(verbose_name = 'Operativ xotira turi', max_length = 20, choices=RAM_TURLARI)
@@ -160,7 +179,13 @@ class Smartphone(models.Model):
     description = models.TextField(verbose_name = 'Qo\'shimcha ma\'lumot', null = True)
 
 
+    def __str__(self):
+        return f"{self.id} {self.firma.name} {self.name} {self.price} {self.currency}"
 
+
+    class Meta:
+        verbose_name = 'SmartPhone'
+        verbose_name_plural = '4. SmartPhone'
 
 
 # -------------------------- Smart Watch bazasi --------------------------
@@ -178,11 +203,17 @@ class Smartphone(models.Model):
 #   `description` TEXT NULL,
 
 class Smartwatch(models.Model):
-    id = models.PositiveBigIntegerField(primary_key = True)
+    
+    CURRENCY = (
+        ('UZS', 'UZS'),
+        ('RUB', 'RUB'),
+        ('USD', 'USD'),
+    )
+
     name = models.CharField(verbose_name = 'Nomi', max_length = 255)
     firma = models.ForeignKey(Firma, on_delete=models.CASCADE, verbose_name = 'Firma')
     price = models.PositiveIntegerField(verbose_name = 'Narxi')
-    prosessor = models.CharField(verbose_name = 'Prosessor', max_length = 255)
+    currency = models.CharField(verbose_name = 'Valyuta', max_length=3, choices = CURRENCY, default='UZS')
     ram = models.PositiveSmallIntegerField(verbose_name = 'Operativ xotira GB')
     memory = models.PositiveSmallIntegerField(verbose_name = 'Tashqi xotira GB')
     battery = models.CharField(verbose_name = 'Batareyka', max_length = 255)
@@ -190,6 +221,13 @@ class Smartwatch(models.Model):
     quantity = models.PositiveSmallIntegerField(verbose_name = 'Smartphone soni')
     description = models.TextField(verbose_name = 'Qo\'shimcha ma\'lumot', null = True)
 
+    def __str__(self):
+        return f"{self.id} {self.firma.name} {self.name} {self.price} {self.currency}"
+
+
+    class Meta:
+        verbose_name = 'SmartWatch'
+        verbose_name_plural = '5. SmartWatch'
 
 # -------------------- Aksesuarlar bazsi ------------------
 
@@ -202,14 +240,28 @@ class Smartwatch(models.Model):
 #   `quantity` INT NULL,
 
 class Accessory(models.Model):
-    id = models.PositiveBigIntegerField(primary_key = True)
+    
+    CURRENCY = (
+        ('UZS', 'UZS'),
+        ('RUB', 'RUB'),
+        ('USD', 'USD'),
+    )
+
     name = models.CharField(verbose_name = 'Nomi', max_length = 255)
     firma = models.ForeignKey(Firma, on_delete=models.CASCADE, verbose_name = 'Firma')
     price = models.PositiveIntegerField(verbose_name = 'Narxi')
+    currency = models.CharField(verbose_name = 'Valyuta', max_length=3, choices = CURRENCY, default='UZS')
     image = models.ImageField(upload_to='accessory/')
     quantity = models.PositiveSmallIntegerField(verbose_name = 'Aksesuar soni')
     description = models.TextField(verbose_name = 'Qo\'shimcha ma\'lumot', null = True)
 
+    def __str__(self):
+        return f"{self.id} {self.firma.name} {self.name} {self.price} {self.currency}"
+
+
+    class Meta:
+        verbose_name = 'Aksesuarlar'
+        verbose_name_plural = '6. Aksesuarlar'
 
 # -------------------- Boshqa mahsulotlar bazasi --------------------
 # CREATE TABLE IF NOT EXISTS `Telegramshop`.`other_products` (
@@ -221,13 +273,27 @@ class Accessory(models.Model):
 #   `quantity` INT NULL,
 
 class Otherproducts(models.Model):
-    id = models.PositiveBigIntegerField(primary_key = True)
+    
+    CURRENCY = (
+        ('UZS', 'UZS'),
+        ('RUB', 'RUB'),
+        ('USD', 'USD'),
+    )
+
     name = models.CharField(verbose_name = 'Nomi', max_length = 255)
     firma = models.ForeignKey(Firma, on_delete=models.CASCADE, verbose_name = 'Firma')
     price = models.PositiveIntegerField(verbose_name = 'Narxi')
+    currency = models.CharField(verbose_name = 'Valyuta', max_length=3, choices = CURRENCY, default='UZS')
     image = models.ImageField(upload_to='other/')
     quantity = models.PositiveSmallIntegerField(verbose_name = 'Soni')
     description = models.TextField(verbose_name = 'Qo\'shimcha ma\'lumot', null = True)
 
+    def __str__(self):
+        return f"{self.id} {self.firma.name} {self.name} {self.price} {self.currency}"
+
+
+    class Meta:
+        verbose_name = 'Boshqa mahsulotlar'
+        verbose_name_plural = '7. Boshqa mahsulotlar'
 
 
