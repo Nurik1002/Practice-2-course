@@ -5,3 +5,6 @@ class RegisterState(StatesGroup):
     email = State()
     phone_num = State()
     manzil = State()
+
+class AddFirmaState(StatesGroup):
+    get_name = State()
