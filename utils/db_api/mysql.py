@@ -1,5 +1,7 @@
 from typing import Union
 from aiomysql.pool import Pool
+import aiomysql
+from data import config
 
 class Database:
 
@@ -20,7 +22,7 @@ class Database:
                       fetchrow: bool = False,
                       execute: bool = False
                       ):
-        
+
         async with self.pool.acquire() as connection:
             connection: Connection
             async with connection.transaction():
@@ -33,18 +35,15 @@ class Database:
                 elif execute:
                     result = await connection.execute(command, *args)
             return result
-        
-    
+
     async def add_user(self, last_name, first_name, email, phone_num, telegram_id, telegram_username, manzil):
         """
         Bazaga foydalamuvhcilarni bazaga qo'shish
         """
         sql = f"DECLARE out INT; CALL create_user('{last_name}', '{first_name}', '{email}', '{phone_num}', '{telegram_id}', '{telegram_username}', '{manzil}', out); SELECT out;"
-        
+
         await self.execute(sql, execute=True)
 
-        
-    
     async def add_admin(self, telegram_id):
         """
         Foydalanuvchini admin darajasiga ko'tarish
@@ -58,9 +57,6 @@ class Database:
         Foydalanuvchi bazada bor yoki yo'qligini tekshirish
         """
         sql = f"CALL chek_user({telegram_id});"
-
-        return await self.execute(sql, fetch=True)
-
-    
-    
-        
+        #sql = f"SELECT id FROM products_users WHERE telegram_id = '{telegram_id}'"
+        result = await self.execute(sql, fetchval=True)
+        return result

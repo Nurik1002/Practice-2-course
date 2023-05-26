@@ -1,7 +1,9 @@
 from aiogram import types
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import  Message
 from aiogram.dispatcher import FSMContext
 from states.user_state import RegisterState
+from loader import dp, db
+import logging
 import re
 
 
@@ -11,7 +13,7 @@ async def royxatdan_otish(msg:Message):
     await RegisterState.full_name.set()
 
 @dp.message_handler(state=RegisterState.full_name)
-async get_full_name(msg : Message, state : FSMContext):
+async def get_full_name(msg : Message, state : FSMContext):
 
     try:
         last_name, first_name = msg.text.split()
@@ -28,18 +30,45 @@ async get_full_name(msg : Message, state : FSMContext):
 
 
 @dp.message_handler(state=RegisterState.email)
-async get_email(msg : Message, state : FSMContext):
+async def get_email(msg : Message, state : FSMContext):
     email = msg.text
     if re.match(r"[\w]*@*[a-z]*\.*[\w]{5,}(\.)*(com)*(@gmail\.com)", email):
         await state.update_data({
             "email" : email
         })
         await RegisterState.phone_num.set()
-        await msg.anwer("Iltimos bog'lainish uchun telefon raqamingzini kiriting! Namuna '913169659'")
+        await msg.answer("Iltimos bog'lainish uchun telefon raqamingzini kiriting! Namuna '913169659'")
     else:
         await msg.answer("Iltimos email manzilingizni to'g'ri kiriting! Namuna 'nyarashbayev97@gmail.com'")
     
 @dp.message_handler(state=RegisterState.phone_num)
+async def get_phone_num(msg : Message, state : FSMContext):
+    phone = msg.text
+    if re.match(r"^\d{9}$", phone):
+        await state.update_data({
+            "phone_num" : phone
+        })
+        await RegisterState.manzil.set()
+        await msg.answer("Iltimos manzilingizni kiriting!")
+    else:
+        await msg.anwer("Iltimos bog'lainish uchun telefon raqamingzini to'g'ri  kiriting! Namuna '913169659'")
+
+
 
 @dp.message_handler(state=RegisterState.manzil)
+async def get_manzil(msg : Message, state : FSMContext):
+    manzil = msg.text
+    data = await state.get_data()
+    last_name = data["last_name"]
+    first_name = data["fist_name"]
+    email = data["email"]
+    phone_num = data["phone_num"]
+    telegram_id=msg.from_user.id
+    telegram_username = msg.from_user.username
+    await db.add_user(last_name, first_name, email, phone_num, telegram_id, telegram_username, manzil)
+    if await db.chek_user(telegram_id=telegram_id) == '1':
+        logging.info(f"Foydalanuvchi bazaga qo'shildi {last_name} {first_name} {email} {phone_num} {manzil} {telegram_id} {telegram_username}")
+    else:
+        logging.info("Foydalanuvchini bazagq qo'shishda xatolik!")
+    await  state.finish()
 
