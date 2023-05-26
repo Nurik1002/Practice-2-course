@@ -35,7 +35,7 @@ class Database:
             return result
         
     
-    def add_user(self, last_name, first_name, email, phone_num, telegram_id, telegram_username, manzil):
+    async def add_user(self, last_name, first_name, email, phone_num, telegram_id, telegram_username, manzil):
         """
         Bazaga foydalamuvhcilarni bazaga qo'shish
         """
@@ -45,13 +45,21 @@ class Database:
 
         
     
-    def add_admin(self, telegram_id):
+    async def add_admin(self, telegram_id):
         """
         Foydalanuvchini admin darajasiga ko'tarish
         """
-        sql = f"CALL set_admin_user({telegram_id})"
+        sql = f"CALL set_admin_user({telegram_id});"
 
         await self.execute(sql, execute=True)
+
+    async def chek_user(self, telegram_id):
+        """
+        Foydalanuvchi bazada bor yoki yo'qligini tekshirish
+        """
+        sql = f"CALL chek_user({telegram_id});"
+
+        return await self.execute(sql, fetch=True)
 
     
     
