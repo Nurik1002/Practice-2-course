@@ -1,9 +1,15 @@
 
 from aiogram import types
 from aiogram.dispatcher.filters.builtin import CommandStart
-from keyboards.default.start import register, menu, add_firma
+from keyboards.default.start import register, menu, menuadmin
 from loader import dp, db
 import logging
+from data.config import ADMINS
+
+
+@dp.message_handler(CommandStart(), user_id=ADMINS)
+async def admin_start(msg : types.Message):
+    await msg.answer("Assalommu alaykum admin!", reply_markup=menuadmin)
 
 @dp.message_handler(CommandStart())
 async def bot_start(message: types.Message):

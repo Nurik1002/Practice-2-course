@@ -75,6 +75,9 @@ async def get_manzil(msg : Message, state : FSMContext):
     await  state.finish()
     await msg.answer("/start")
 
+
+
+
 @dp.message_handler(text="Firma qo'shish")
 async def add_fima(msg:Message, state : FSMContext):
     await msg.answer("Firma nomini kiriting : ")

@@ -13,8 +13,7 @@ async def on_startup(dispatcher):
     # Bot ishga tushgani haqida adminga xabar berish
     await on_startup_notify(dispatcher)
     await db.create()
-async def myFunc():
-    await db.create()
+    #await db.get_all_computer()
 
 
 if __name__ == '__main__':

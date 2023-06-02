@@ -4,6 +4,15 @@ menu = ReplyKeyboardMarkup(
     keyboard=[
         [
             KeyboardButton(text="Bosh menyu"),
+        ],
+    ],
+    resize_keyboard=True,
+)
+
+menuadmin = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text="Bosh menyu"),
             KeyboardButton(text="Firma qo'shish"),
         ],
     ],
